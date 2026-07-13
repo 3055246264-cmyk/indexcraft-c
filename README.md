@@ -1,7 +1,7 @@
-﻿# IndexCraft C
+# IndexCraft C
 
-涓€涓敤 C17 瀹炵幇鐨勮交閲忕骇鏂囨。妫€绱㈠紩鎿庛€傚畠鎶婅嫢骞叉枃鏈枃浠舵瀯寤轰负鍊掓帓绱㈠紩锛屾敮鎸?AND / OR 澶氬叧閿瘝鏌ヨ锛屽苟浣跨敤 TF-IDF 椋庢牸鐨勫垎鏁板缁撴灉鎺掑簭銆?
-杩欎釜椤圭洰鐨勭洰鏍囦笉鏄爢鍔熻兘锛岃€屾槸鍋氫竴涓璇曡兘璁叉竻妤氥€佷唬鐮侀噺鍙帶銆佽兘鑷劧寤朵几鍒版暟鎹簱涓庢悳绱㈢郴缁熺殑璇濋浣滃搧銆?
+一个用 C17 实现的轻量级文档检索引擎。它把若干文本文件构建为倒排索引，支�?AND / OR 多关键词查询，并使用 TF-IDF 风格的分数对结果排序�?
+这个项目的目标不是堆功能，而是做一个复试能讲清楚、代码量可控、能自然延伸到数据库与搜索系统的话题作品�?
 ## Features
 
 - Hash table: stores vocabulary and maps each term to its postings list.
@@ -53,9 +53,9 @@ During query evaluation, the engine scans the indexed documents, checks whether 
 
 This is deliberately a small, readable baseline. A production search engine would add persistent storage, a better tokenizer, compressed postings, phrase queries, and a real ranking model.
 
-## 澶嶈瘯璁茶В鎻愮翰锛?0 绉掞級
+## 复试讲解提纲�?0 秒）
 
-1. 鎴戞妸鈥滆瘝 -> 鍑虹幇杩囪璇嶇殑鏂囨。鍒楄〃鈥濆缓鎴愬€掓帓绱㈠紩锛涙煡璇嶄笉鍐嶉渶瑕侀€愮瘒鎵叏鏂囥€?2. 璇嶅吀閲囩敤鍝堝笇琛紝骞冲潎鏌ユ壘澶嶆潅搴︽槸 O(1)锛涙瘡涓瘝涓嬮潰鏄摼寮?postings list锛屼繚瀛樻枃妗ｇ紪鍙峰拰璇嶉銆?3. 鏌ヨ鏃讹紝AND 瑕佹眰鎵€鏈夎瘝閮藉懡涓紝OR 瑕佹眰浠讳竴璇嶅懡涓紱鍛戒腑鍚庣敤 TF-IDF 椋庢牸鍒嗘暟鎺掑簭銆?4. 杩欎釜椤圭洰璁╂垜鎶婇摼琛ㄣ€佸搱甯屻€佹枃浠?I/O銆佹帓搴忋€佹ā鍧楀寲 C 宸ョ▼涓叉垚浜嗕竴鏉″畬鏁撮摼璺€?5. 濡傛灉缁х画鎵╁睍锛屾垜浼氬姞鍊掓帓绱㈠紩钀界洏銆佽烦琛ㄦ垨鍘嬬缉銆佺煭璇绱㈠拰 BM25 鎺掑簭銆?
+1. 我把“词 -> 出现过该词的文档列表”建成倒排索引；查词不再需要逐篇扫全文�?2. 词典采用哈希表，平均查找复杂度是 O(1)；每个词下面是链�?postings list，保存文档编号和词频�?3. 查询时，AND 要求所有词都命中，OR 要求任一词命中；命中后用 TF-IDF 风格分数排序�?4. 这个项目让我把链表、哈希、文�?I/O、排序、模块化 C 工程串成了一条完整链路�?5. 如果继续扩展，我会加倒排索引落盘、跳表或压缩、短语检索和 BM25 排序�?
 ## Project structure
 
     src/index.h     Public data structures and APIs
