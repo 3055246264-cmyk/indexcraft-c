@@ -1,0 +1,4 @@
+Data structures organize data so that programs can search, update, and process it efficiently.
+An inverted index maps a term to the documents that contain the term.
+Hash tables provide fast average lookup for terms in a search engine.
+

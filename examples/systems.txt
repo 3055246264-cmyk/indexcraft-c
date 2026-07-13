@@ -1,0 +1,4 @@
+Operating systems manage processes, memory, files, and devices.
+An efficient cache needs a data structure for lookup and an eviction policy.
+Database systems use indexes to accelerate query processing.
+

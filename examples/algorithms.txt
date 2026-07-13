@@ -1,0 +1,4 @@
+Algorithms describe a sequence of steps for solving a problem.
+Graph search uses breadth first search or depth first search.
+Sorting and hashing are common topics in data structure interviews.
+
