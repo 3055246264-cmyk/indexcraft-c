@@ -1,15 +1,17 @@
 # IndexCraft C
 
-一个用 C17 实现的轻量级文档检索引擎。它把若干文本文件构建为倒排索引，支�?AND / OR 多关键词查询，并使用 TF-IDF 风格的分数对结果排序�?
-这个项目的目标不是堆功能，而是做一个复试能讲清楚、代码量可控、能自然延伸到数据库与搜索系统的话题作品�?
+轻量级 C17 文档检索引擎：将多个文本文件构建为倒排索引，支持 AND / OR 多关键词查询，并以 TF-IDF 风格评分排序结果。
+
+这个项目面向计算机复试展示：功能完整但规模可控，可以清楚说明哈希表、链表、文件 I/O、查询处理与排序如何协作。
+
 ## Features
 
-- Hash table: stores vocabulary and maps each term to its postings list.
-- Inverted index: each term points to documents containing it and their term frequencies.
-- Tokenizer: case-insensitive extraction of alphanumeric tokens.
-- Boolean retrieval: AND returns common documents; OR returns any matching document.
-- Ranking: combines normalized term frequency with inverse document frequency.
-- Engineering basics: CMake, Makefile, warning flags, sample corpus, and GitHub Actions CI.
+- 哈希表词典：平均 O(1) 查找词项。
+- 倒排索引：每个词记录出现过它的文档编号和词频。
+- 链式 postings list：适合解释链表与动态数据组织。
+- 布尔检索：AND 返回共同命中的文档，OR 返回任一命中的文档。
+- 相关度排序：使用归一化 TF 与 IDF 的组合评分。
+- 工程化配置：CMake、Makefile、示例语料与 GitHub Actions CI。
 
 ## Quick start
 
@@ -24,43 +26,36 @@
     gcc -std=c17 -O2 -Wall -Wextra -Wpedantic -o indexcraft src/main.c src/index.c -lm
     ./indexcraft examples/data_structures.txt examples/systems.txt examples/algorithms.txt
 
-Then try:
+运行后可输入：
 
     AND data structure
     OR search index
     STATS
     QUIT
 
-## Example
-
-    Indexed 3 documents and 71 unique terms.
-    Commands: AND <terms>, OR <terms>, STATS, QUIT
-
-    indexcraft> AND data structure
-     1. score=0.2135  examples/data_structures.txt
-     2. score=0.1532  examples/algorithms.txt
-
 ## Design
 
-For a term such as search, the index is conceptually:
+倒排索引的核心映射为：
 
-    search -> [(doc 0, tf=1), (doc 2, tf=1)]
+    term -> [(document_id, term_frequency), ...]
 
-During query evaluation, the engine scans the indexed documents, checks whether each query term has a posting for the document, and accumulates:
+查询时，程序判断每个文档是否包含各个词项：AND 要求全部命中，OR 要求至少一个命中。结果得分为：
 
     score = sum((term_frequency / document_token_count) * IDF)
     IDF = log((N + 1) / (document_frequency + 1)) + 1
 
-This is deliberately a small, readable baseline. A production search engine would add persistent storage, a better tokenizer, compressed postings, phrase queries, and a real ranking model.
+## 复试 90 秒讲解
 
-## 复试讲解提纲�?0 秒）
+1. 我实现的是一个轻量级文本检索系统，核心数据结构是倒排索引。
+2. 词典采用哈希表，词项查找平均是 O(1)；每个词下面通过链表保存文档编号和词频。
+3. 查询支持 AND 和 OR：前者筛选所有关键词同时出现的文档，后者筛选任意关键词出现的文档。
+4. 我没有只返回命中结果，而是用 TF-IDF 风格的分数对文档排序，因此结果有相关度概念。
+5. 继续扩展时，我会加入索引持久化、短语检索、压缩 postings 与 BM25 排序。
 
-1. 我把“词 -> 出现过该词的文档列表”建成倒排索引；查词不再需要逐篇扫全文�?2. 词典采用哈希表，平均查找复杂度是 O(1)；每个词下面是链�?postings list，保存文档编号和词频�?3. 查询时，AND 要求所有词都命中，OR 要求任一词命中；命中后用 TF-IDF 风格分数排序�?4. 这个项目让我把链表、哈希、文�?I/O、排序、模块化 C 工程串成了一条完整链路�?5. 如果继续扩展，我会加倒排索引落盘、跳表或压缩、短语检索和 BM25 排序�?
 ## Project structure
 
     src/index.h     Public data structures and APIs
-    src/index.c     Hash table, inverted index, tokenizer, query/ranking logic
+    src/index.c     Hash table, inverted index, tokenizer, query and ranking logic
     src/main.c      CLI interaction
     examples/       Small corpus for a reproducible demo
     .github/        Continuous integration workflow
-
